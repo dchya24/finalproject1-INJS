@@ -1,16 +1,21 @@
 {
   "dependencies": {
-    "express": "^4.17.3"
+    "express": "^4.17.3",
+    "pg": "^8.7.3",
+    "sequelize": "^6.19.0"
   },
   "devDependencies": {
-    "nodemon": "^2.0.15"
+    "nodemon": "^2.0.15",
+    "sequelize-cli": "^6.4.1"
   },
   "name": "finalproject-1",
   "version": "1.0.0",
   "main": "app.js",
   "scripts": {
     "start": "nodemon app.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "db:migrate": "sequelize db:migrate",
+    "db:migration:generate": "sequelize migration:generate"
   },
   "repository": {
     "type": "git",
