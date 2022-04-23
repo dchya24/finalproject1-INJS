@@ -9,7 +9,7 @@ const tableUsers = `
   );`;
 
 const tableReflections = `
-  CREATE TABLE IF NOT EXISTS "users" (
+  CREATE TABLE IF NOT EXISTS "reflections" (
     "id" SERIAL,
     "success" VARCHAR(100) NOT NULL,
     "low_point" VARCHAR(191) NOT NULL,
