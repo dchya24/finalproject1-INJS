@@ -6,6 +6,7 @@ const reflectionsRouter = require("./routes/reflection.routes")
 
 app.use(express.json());
 
+
 app.get("/", (req, res) => {
   res.status(200)
     .json({
@@ -21,6 +22,6 @@ app.use((error, req, res, next) => {
   res.status(500).json({ message: error.message })
 })
 
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
   console.log(`Server running at ${PORT}`);
 })
