@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 const SECRET_KEY = "doladolado";
 
-exports.verify = (req, res, next) => {
+const verify = (req, res, next) => {
   const token = req.headers['x-access-token'];
 
   jwt.verify(token, SECRET_KEY, (err, decoded) => {
@@ -18,3 +18,16 @@ exports.verify = (req, res, next) => {
     next();
   })
 }
+
+const generateToken = (payload) => {
+  return jwt.sign(payload, privateKey, {
+    algorithm: 'HS256',
+    expiresIn: "1h"
+  })
+}
+
+module.exports = {
+  verify,
+  generateToken
+}
+
