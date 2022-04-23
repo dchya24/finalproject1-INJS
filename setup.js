@@ -2,21 +2,21 @@ const db = require("./config/db");
 
 const tableUsers = `
   CREATE TABLE IF NOT EXISTS "users" (
-    "id" SERIAL,
+    "id" UUID NOT NULL DEFAULT gen_random_uuid (),
     "email" VARCHAR(64) NOT NULL,
     "password" VARCHAR(191) NOT NULL,
     PRIMARY KEY ("id")
   );`;
 
 const tableReflections = `
-  CREATE TABLE IF NOT EXISTS "users" (
-    "id" SERIAL,
+  CREATE TABLE IF NOT EXISTS "reflections" (
+    "id" UUID NOT NULL DEFAULT gen_random_uuid (),
     "success" VARCHAR(100) NOT NULL,
     "low_point" VARCHAR(191) NOT NULL,
     "take_away" VARCHAR(191) NOT NULL,
     "owner_id" INTEGER NOT NULL,
-    created_date DATE NOT NULL,
-    modified_date DATE NOT NULL,
+    created_date TIMESTAMPTZ NOT NULL,
+    modified_date TIMESTAMPTZ NOT NULL,
     PRIMARY KEY ("id")
   );`;
 
