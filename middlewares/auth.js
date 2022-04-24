@@ -1,11 +1,11 @@
 const jwt = require("jsonwebtoken");
 const SECRET_KEY = "doladolado";
 
-const verify = (req, res, next) => {
+const verify = async (req, res, next) => {
   const token = req.headers['x-access-token'];
 
   jwt.verify(token, SECRET_KEY, (err, decoded) => {
-    if(err){
+    if (err) {
       console.log(err)
       return res.status(500)
         .json({
@@ -19,11 +19,13 @@ const verify = (req, res, next) => {
   })
 }
 
-const generateToken = (payload) => {
-  return jwt.sign(payload, privateKey, {
-    algorithm: 'HS256',
-    expiresIn: "1h"
-  })
+function generateToken(owner_id) {
+  const payload = {
+    user: {
+      id: owner_id
+    }
+  };
+  return jwt.sign(payload, SECRET_KEY, { expiresIn: "1h" });
 }
 
 module.exports = {

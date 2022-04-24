@@ -1,93 +1,60 @@
-const User = require("../models/index").User;
 const bcrypt = require('bcrypt')
-const db = require("../config/db");
+const db = require("../config/db")
 const { generateToken } = require("../middlewares/auth")
 
-exports.createUser = async (req, res) => {
-    const body = req.body
-    const email = body.email
-    const password = body.password
+exports.register = async (req, res) => {
+    const { email, password } = req.body
 
-    return User.findOne({
-        where: {
-            email: email
-        }
-    }).then(user => {
-        if (!user) {
-            return res.status(400).send({
-                message: "email not found"
-            })
-        }
-        const isValid = bcrypt.compareSync(password, user.password)
+    try {
+        const user = await db.query("SELECT * FROM users WHERE email = $1", [
+            email
+        ])
 
-        if (!isValid) {
-            return res.status(400).send({
-                message: "Email and password not match"
-            })
+        if (user.rows.length > 0) {
+            return res.status(401).json("User already exist!")
         }
 
-        const salt = bcrypt.genSaltSync(10);
-        const hash = bcrypt.hashSync(password, salt);
+        const salt = await bcrypt.genSalt(10)
+        const bcryptPassword = await bcrypt.hash(password, salt)
 
-        const token = generateToken({
-            firstName: user.firstName,
-            lastName: user.lastName,
-            id: user.id,
-            email: user.email
-        })
-        res.status(200).send({
-            status: "success",
-            message: "Login sukses",
-            token: token
-        })
-    })
+        let newUser = await db.query(
+            "INSERT INTO users (email, password) VALUES ($1, $2) RETURNING *",
+            [email, bcryptPassword]
+        )
+
+        const jwtToken = generateToken(newUser.rows[0].owner_id)
+
+        return res.json({ jwtToken })
+    } catch (err) {
+        console.error(err.message)
+        res.status(500).send("Server error")
+    }
 }
 
-exports.loginUser = async (req, res) => {
-    const body = req.body;
+exports.login = async (req, res) => {
+    const { email, password } = req.body;
 
-    const firstName = body.firstName;
-    const lastName = body.lastName;
-    const email = body.email;
-    const password = body.password;
+    try {
+        const user = await db.query("SELECT * FROM users WHERE email = $1", [
+            email
+        ]);
 
-    User.findOne({
-        where: {
-            email: email
-        }
-    }).then(users => {
-        if (users) {
-            return res.status(400).send({
-                message: 'Email already exist'
-            })
+        if (user.rows.length === 0) {
+            return res.status(401).json("Invalid Credential");
         }
 
-        const salt = bcrypt.genSaltSync(10)
-        const hash = bcrypt.hashSync(password, salt)
-        User.create({
-            firstName: firstName,
-            lastName: lastName,
-            email: email,
-            password: hash
-        }).then(users => {
-            const token = generateToken({
-                firstName: users.firstName,
-                lastName: users.lastName,
-                id: users.id,
-                email: users.email
-            })
+        const validPassword = await bcrypt.compare(
+            password,
+            user.rows[0].password
+        );
 
-            res.status(200).send({
-                status: 'SUCCESS',
-                message: 'User created',
-                token: token
-            })
-        }).catch(error => {
-            console.log("error", error)
-            res.status(503).send({
-                status: 'FAILED',
-                message: 'user creation failed'
-            })
-        })
-    })
+        if (!validPassword) {
+            return res.status(401).json("Invalid Credential");
+        }
+        const jwtToken = generateToken(user.rows[0].owner_id);
+        return res.json({ jwtToken });
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send("Server error");
+    }
 }
