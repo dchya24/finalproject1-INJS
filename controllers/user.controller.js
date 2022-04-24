@@ -22,9 +22,9 @@ exports.register = async (req, res) => {
             [email, bcryptPassword]
         )
 
-        const jwtToken = generateToken(newUser.rows[0].owner_id)
+        const jwtToken = generateToken({ userId: newUser.rows[0].id});
 
-        return res.json({ jwtToken })
+        return res.json({ token: jwtToken})
     } catch (err) {
         console.error(err.message)
         res.status(500).send("Server error")
@@ -51,8 +51,9 @@ exports.login = async (req, res) => {
         if (!validPassword) {
             return res.status(401).json("Invalid Credential");
         }
-        const jwtToken = generateToken(user.rows[0].owner_id);
-        return res.json({ jwtToken });
+        const jwtToken = generateToken({ userId: user.rows[0].id});
+
+        return res.json({ token: jwtToken})
     } catch (err) {
         console.error(err.message);
         res.status(500).send("Server error");

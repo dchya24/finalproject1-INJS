@@ -14,7 +14,7 @@ const tableReflections = `
     "success" VARCHAR(100) NOT NULL,
     "low_point" VARCHAR(191) NOT NULL,
     "take_away" VARCHAR(191) NOT NULL,
-    "owner_id" INTEGER NOT NULL,
+    "owner_id" UUID NOT NULL,
     created_date TIMESTAMPTZ NOT NULL,
     modified_date TIMESTAMPTZ NOT NULL,
     PRIMARY KEY ("id")

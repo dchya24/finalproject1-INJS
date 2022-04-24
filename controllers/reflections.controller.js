@@ -9,8 +9,9 @@ exports.getReflections = async(req, res,next) => {
       data: data.rows
     })
   }
-  catch(e){
-    next(e)
+  catch(error){
+    console.log(error)
+    next(error)
   }
 }
 
@@ -32,7 +33,8 @@ exports.createReflection = async(req, res, next) => {
     res.json(result.rows[0]);
   }
   catch(error){
-    next(err);
+    console.log(error)
+    next(error);
   }
 }
 
@@ -62,7 +64,8 @@ exports.updateReflection = async(req, res, next) => {
     }
   }
   catch(error){
-    next(err);
+    console.log(error)
+    next(error);
   }
 }
 
@@ -89,7 +92,8 @@ exports.deleteReflection = async(req, res, next) => {
     }
 
   }
-  catch(err){
-    next(err);
+  catch(error){
+    console.log(error)
+    next(error);
   }
 }

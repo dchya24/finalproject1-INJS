@@ -14,17 +14,12 @@ const verify = async (req, res, next) => {
         })
     }
 
-    req.userId = decoded.id;
+    req.userId = decoded.userId;
     next();
   })
 }
 
-function generateToken(owner_id) {
-  const payload = {
-    user: {
-      id: owner_id
-    }
-  };
+function generateToken(payload) {
   return jwt.sign(payload, SECRET_KEY, { expiresIn: "1h" });
 }
 
