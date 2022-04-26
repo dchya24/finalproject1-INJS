@@ -5,7 +5,8 @@ exports.getReflections = async(req, res,next) => {
     const owner_id = req.userId;
     const data = await db.query("SELECT * FROM reflections WHERE owner_id=$1", [owner_id]);
 
-    res.json({
+    res.status(200)
+    .json({
       data: data.rows
     })
   }
@@ -30,7 +31,7 @@ exports.createReflection = async(req, res, next) => {
     }
   
     const result = await db.query(query)
-    res.json(result.rows[0]);
+    res.status(200).json(result.rows[0]);
   }
   catch(error){
     console.log(error)
@@ -56,7 +57,8 @@ exports.updateReflection = async(req, res, next) => {
     const result = await db.query(query)
   
     if(result.rows.length > 0){
-      res.json(result.rows[0]);
+      res.status(200)
+        .json(result.rows[0]);
     }
     else {
       res.status(400)
@@ -82,12 +84,13 @@ exports.deleteReflection = async(req, res, next) => {
     const result = await db.query(query)
     
     if(result.rowCount > 0){
-      res.json({
-        "message": "Reflection berhasil dihapus!"
-      });
+      return res.status(200
+        ).json({
+          "message": "Reflection berhasil dihapus!"
+        });
     }
     else {
-      res.status(400)
+      return res.status(400)
         .json({"message": "Reflection tidak ditemukan!"})
     }
 
