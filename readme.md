@@ -4,6 +4,8 @@ First Final Project from Kampus Merdeka - Introduce to NodeJS
 
 For list API see [api list](./list_api.md)
 
+URL apps [link](https://injs-finalproject1.herokuapp.com/)
+
 ## Installation
 
 ```bash
