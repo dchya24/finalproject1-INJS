@@ -94,8 +94,7 @@ describe("UserController.login", () => {
 
     it("should handle errors", async () => {
         const errorMessage = { message: "Error in login" };
-        const rejectedPromise = Promise.reject(errorMessage);
-        db.query.mockRejectedValue(rejectedPromise);
+        db.query.mockRejectedValue(errorMessage);
 
         await UserController.login(req, res, next);
         expect(res.statusCode).toBe(400);

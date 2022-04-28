@@ -5,7 +5,7 @@ const db = require("../../config/db")
 jest.mock('../../config/db.js');
 
 let req, res, next;
-const data = {
+let data  = {
   rows: [{
     "success": "Beli laptop",
     "low_point": "Halooo",
@@ -20,20 +20,22 @@ beforeEach(() => {
 });
 
 describe("ReflectionController.getReflections", () => {
-  // it("Should have object 'data'", async () => {  
-  //   db.query.mockResolvedValueOnce(data)
+  it("Should have object 'data'", async () => {  
+    db.query.mockResolvedValueOnce(data)
 
-  //   await ReflectionController.getReflections(req, res, next);
+    await ReflectionController.getReflections(req, res, next);
 
-  //   expect(res._getJSONData()).toHaveProperty('data')
+    expect(res._getJSONData()).toHaveProperty('data')
 
-  // })
+  })
 
-  // it("Should have return code 200", async () => {
-  //   await ReflectionController.getReflections(req, res, next);
+  it("Should have return code 200", async () => {
+    db.query.mockResolvedValueOnce(data)
 
-  //   expect(res.statusCode).toEqual(200);
-  // })
+    await ReflectionController.getReflections(req, res, next);
+
+    expect(res.statusCode).toEqual(200);
+  })
 
   it("should handle errors", async () => {
     const errorMessage = { message: "Error in getReflections" };

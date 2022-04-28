@@ -1,38 +1,41 @@
 const httpMocks = require('node-mocks-http')
-const Auth = require("../../middlewares/auth")
+const auth = require("../../middlewares/auth")
 const jwt = require("jsonwebtoken");
 
 let req, res, next;
-const data = {
-    "email": "",
-    "password": ""
-}
 
 jest.mock("jsonwebtoken")
 
 beforeAll(() => {
-    req = httpMocks.createRequest()
-    res = httpMocks.createResponse()
-    next = jest.fn()
-
+    req = httpMocks.createRequest();
+    res = httpMocks.createResponse();
+    next = jest.fn();
 })
 
 describe("Auth.verify", () => {
-    beforeAll(() => {
-
-        req.headers['x-access-token'] = "dua"
-        console.log(req.headers)
-    })
     it("Should have called next ", async () => {
-
-
-        jwt.verify = jest.fn().mockImplementation((token, PRIVATE_KEY, cb) => {
-            cb(null, data)
+        jwt.verify = jest.fn().mockImplementation(
+            (token, privatKey, cb) => {
+            cb(null , {
+                "id": "1",
+                "name": "John Doe"
+            })
         })
-        await Auth.verify(data)
-
+        
+        await auth.verify(req, res, next)
         expect(jwt.verify).toHaveBeenCalled()
         expect(next).toHaveBeenCalled()
+    })
+
+    it("Should handle errors ", async () => {
+        jwt.verify = jest.fn().mockImplementation(
+            (token, privatKey, cb) => {
+            cb({ message: "invalid Token"} , null)
+        })
+        
+        await auth.verify(req, res, next)
+        expect(jwt.verify).toHaveBeenCall
+        expect(res.statusCode).toBe(500);
     })
 
 })
@@ -41,7 +44,10 @@ describe("Auth.generateToken", () => {
     it("Should return 'token", () => {
         const token = "satu"
         jwt.sign.mockImplementation(() => token)
-        Auth.generateToken(data)
+        auth.generateToken({
+            "id": "1",
+            "name": "John Doe"
+        })
 
         expect(jwt.sign).toHaveBeenCalled()
         expect(jwt.sign).toHaveReturnedWith(token)
